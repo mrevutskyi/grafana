@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -54,7 +55,7 @@ var logger = log.New("tsdb.cloudwatch")
 func ProvideService(cfg *setting.Cfg, httpClientProvider httpclient.Provider, features featuremgmt.FeatureToggles) *CloudWatchService {
 	logger.Debug("Initializing")
 
-	executor := newExecutor(datasource.NewInstanceManager(NewInstanceSettings(httpClientProvider)), cfg, awsds.NewSessionCache(), features)
+	executor := newExecutor(datasource.NewInstanceManager(NewInstanceSettings(httpClientProvider)), cfg, awsds.NewSessionCache(), features, time.Second)
 
 	return &CloudWatchService{
 		Cfg:      cfg,
@@ -71,12 +72,17 @@ type SessionCache interface {
 	GetSession(c awsds.SessionConfig) (*session.Session, error)
 }
 
-func newExecutor(im instancemgmt.InstanceManager, cfg *setting.Cfg, sessions SessionCache, features featuremgmt.FeatureToggles) *cloudWatchExecutor {
+func newExecutor(im instancemgmt.InstanceManager, cfg *setting.Cfg, sessions SessionCache, features featuremgmt.FeatureToggles, alertPollPeriod ...time.Duration) *cloudWatchExecutor {
 	e := &cloudWatchExecutor{
 		im:       im,
 		cfg:      cfg,
 		sessions: sessions,
-		features: features,
+		features: features, alertPollPeriod: alertPollPeriod[0],
+	}
+	if len(alertPollPeriod) == 1 && alertPollPeriod[0] != 0 {
+		e.alertPollPeriod = alertPollPeriod[0]
+	} else {
+		e.alertPollPeriod = time.Second
 	}
 
 	e.resourceHandler = httpadapter.New(e.newResourceMux())
@@ -116,6 +122,9 @@ type cloudWatchExecutor struct {
 	regionCache sync.Map
 
 	resourceHandler backend.CallResourceHandler
+
+	// necessary in order to replace it with shorter duration for tests
+	alertPollPeriod time.Duration
 }
 
 func (e *cloudWatchExecutor) getRequestContext(ctx context.Context, pluginCtx backend.PluginContext, region string) (models.RequestContext, error) {
