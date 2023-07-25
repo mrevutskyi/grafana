@@ -41,7 +41,7 @@ const collapseTitleStyle = (theme: GrafanaTheme2) => {
   };
 };
 
-export const CloudWatchLogsQueryEditor = memo(function CloudWatchLogsQueryEditor(props: Props) {
+export const CloudWatchLogsQueryEditor = (props: Props) => {
   const { query, data, datasource, exploreId } = props;
 
   const [maxAttemptsError, setMaxAttemptsError] = useState(false);
@@ -66,7 +66,7 @@ export const CloudWatchLogsQueryEditor = memo(function CloudWatchLogsQueryEditor
   const changeMaxAttempts = (event: ChangeEvent<HTMLInputElement>) => {
     const attempts = parseFloat(event.target.value);
     if (Number.isInteger(attempts)) {
-      props.onChange({ ...query, alertMaxAttempts: attempts });
+      props.onChange({ ...query, alertQueryMaxAttempts: attempts });
       setMaxAttemptsError(false);
     } else {
       setMaxAttemptsError(true);
@@ -91,9 +91,9 @@ export const CloudWatchLogsQueryEditor = memo(function CloudWatchLogsQueryEditor
           label={
             <Stack gap={0} wrap={false}>
               <h6 className={styles.title}>Alert Query Options</h6>
-              {!isOpen && query.alertMaxAttempts && (
+              {!isOpen && query.alertQueryMaxAttempts && (
                 <div className={styles.labelSummary}>
-                  <span>{`Max attempts: ${query.alertMaxAttempts}`}</span>
+                  <span>{`Max attempts: ${query.alertQueryMaxAttempts}`}</span>
                 </div>
               )}
             </Stack>
@@ -114,11 +114,11 @@ export const CloudWatchLogsQueryEditor = memo(function CloudWatchLogsQueryEditor
               Maximum number of attempts
             </InlineFormLabel>
             <Input
+              data-testid="input"
               type="number"
               className="width-6"
               placeholder="8"
               spellCheck={false}
-              defaultValue={8}
               onChange={changeMaxAttempts}
               invalid={maxAttemptsError}
             />
@@ -128,6 +128,6 @@ export const CloudWatchLogsQueryEditor = memo(function CloudWatchLogsQueryEditor
       ) : null}
     </>
   );
-});
+};
 
-export default CloudWatchLogsQueryEditor;
+export default memo(CloudWatchLogsQueryEditor);

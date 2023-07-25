@@ -34,7 +34,7 @@ describe('LogsQueryEditor', () => {
       await userEvent.click(collapse);
       const maxOptionsInput = await screen.findByTestId('input');
       await userEvent.type(maxOptionsInput, '10');
-      expect(props.onChange).toHaveBeenCalledWith(expect.objectContaining({ alertMaxAttempts: 10 }));
+      expect(props.onChange).toHaveBeenCalledWith(expect.objectContaining({ alertQueryMaxAttempts: 10 }));
     });
     it('should not update query.alertMaxOptions if the user enters an invalid int', async () => {
       render(<CloudWatchLogsQueryEditor query={query} {...props} />);

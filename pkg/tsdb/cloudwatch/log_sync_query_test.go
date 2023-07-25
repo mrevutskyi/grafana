@@ -306,7 +306,7 @@ func Test_executeSyncLogQuery_handles_RefId_from_input_queries(t *testing.T) {
 		require.True(t, ok)
 		assert.Equal(t, []*data.Field{expectedLogFieldFromSecondCall}, respB.Frames[0].Fields)
 	})
-	t.Run("when the alertMaxAttempts field isn't provided, 8 is assigned by default", func(t *testing.T) {
+	t.Run("when the alertQueryMaxAttempts field isn't provided, 8 is assigned by default", func(t *testing.T) {
 		cli = &mockLogsSyncClient{}
 		cli.On("StartQueryWithContext", mock.Anything, mock.Anything, mock.Anything).Return(&cloudwatchlogs.StartQueryOutput{
 			QueryId: aws.String("abcd-efgh-ijkl-mnop"),
@@ -337,7 +337,7 @@ func Test_executeSyncLogQuery_handles_RefId_from_input_queries(t *testing.T) {
 		cli.AssertNumberOfCalls(t, "GetQueryResultsWithContext", 8)
 
 	})
-	t.Run("when the alertMaxAttempts field is provided, it is correctly assigned", func(t *testing.T) {
+	t.Run("when the alertQueryMaxAttempts field is provided, it is correctly assigned", func(t *testing.T) {
 		cli = &mockLogsSyncClient{}
 		cli.On("StartQueryWithContext", mock.Anything, mock.Anything, mock.Anything).Return(&cloudwatchlogs.StartQueryOutput{
 			QueryId: aws.String("abcd-efgh-ijkl-mnop"),
@@ -359,7 +359,7 @@ func Test_executeSyncLogQuery_handles_RefId_from_input_queries(t *testing.T) {
 					JSON: json.RawMessage(`{
 						"queryMode":    "Logs",
 						"expression": "query string for A",
-						"alertMaxAttempts": 5
+						"alertQueryMaxAttempts": 5
 					}`),
 				},
 			},

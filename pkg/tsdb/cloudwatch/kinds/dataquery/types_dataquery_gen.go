@@ -187,8 +187,8 @@ type CloudWatchLogsQuery struct {
 	// properties for the given context.
 	DataQuery
 
-	// Number of attempts to get the query results from the datasource before the alert times out. Attempts are made 1 second apart. Default value: 8
-	AlertMaxAttempts *int64 `json:"alertMaxAttempts,omitempty"`
+	// Number of attempts to get the alert query results from the datasource before the alert times out. Attempts are made 1 second apart. Default value: 8
+	AlertQueryMaxAttempts *int `json:"alertQueryMaxAttempts,omitempty"`
 
 	// For mixed data sources the selected datasource is on the query level.
 	// For non mixed scenarios this is undefined.

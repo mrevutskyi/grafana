@@ -162,8 +162,8 @@ composableKinds: DataQuery: {
 					statsGroups?: [...string]
 					// Log groups to query
 					logGroups?: [...#LogGroup]
-					// Number of attempts to get the query results from the datasource before the alert times out. Attempts are made 1 second apart. Default value: 8
-					alertMaxAttempts?: int64
+					// Number of attempts to get the alert query results from the datasource before the alert times out. Attempts are made 1 second apart. Default value: 8
+					alertQueryMaxAttempts?: int
 					// @deprecated use logGroups
 					logGroupNames?: [...string]
 				} @cuetsy(kind="interface")

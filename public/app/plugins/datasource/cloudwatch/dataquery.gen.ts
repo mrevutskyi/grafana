@@ -221,9 +221,9 @@ export type QueryEditorExpression = (QueryEditorArrayExpression | QueryEditorPro
  */
 export interface CloudWatchLogsQuery extends common.DataQuery {
   /**
-   * Number of attempts to get the query results from the datasource before the alert times out. Attempts are made 1 second apart. Default value: 8
+   * Number of attempts to get the alert query results from the datasource before the alert times out. Attempts are made 1 second apart. Default value: 8
    */
-  alertMaxAttempts?: number;
+  alertQueryMaxAttempts?: number;
   /**
    * The CloudWatch Logs Insights query to execute
    */
